@@ -1,0 +1,7 @@
+daddyness
+*.aux
+*.fdb*
+*.fls
+*.log
+*.out
+*.gz
