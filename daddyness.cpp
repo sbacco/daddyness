@@ -12,7 +12,7 @@ A = 5-2 = 3
 S+A = 7+3 = 10 = 2*5
 conc(S+A) = [25 , 52]
 
-The conjecture is that 52 is the only daddy number. This program tests up to 100millions, and no other example was found.
+The conjecture is that 52 is the only daddy number. This program tests up to 10 millions, and no other example was found.
 */
 
 #include <iostream>
@@ -32,18 +32,18 @@ typedef std::vector<num> vec;
 class Primefac
 {
 public:
-	Primefac();
-	// A O(log n) function returning primefactorization 
-	// by dividing by smallest prime factor at every step 
-	vec operator()(num x);
+    Primefac();
+    // A O(log n) function returning primefactorization 
+    // by dividing by smallest prime factor at every step 
+    vec operator()(num x);
 
 private:
-	// Calculating SPF (Smallest Prime Factor) for every 
-	// number till MAXN. 
-	// Time Complexity : O(nloglogn) 
-	void sieve();
+    // Calculating SPF (Smallest Prime Factor) for every 
+    // number till MAXN. 
+    // Time Complexity : O(nloglogn) 
+    void sieve();
 
-	vec spf;// stores smallest prime factor for every number 
+    vec spf;// stores smallest prime factor for every number 
 };
 
 // Sum and alternating sum of the digits of n
@@ -58,20 +58,20 @@ vec conc(vec lon);
 
 int main()
 {
-	Primefac primefac{};
-	for(num n{2} ; n < UPTO ; n++)
-	{
-		if(!(n%1'000'000)) std::clog << "Tested up to n = " << n/1'000'000 << " millions" << std::endl;
-		long S{digitsum(n)};
-		long A{digitsum(n,true)};
+    Primefac primefac{};
+    for(num n{2} ; n < UPTO ; n++)
+    {
+        if(!(n%1'000'000)) std::clog << "Tested up to n = " << n/1'000'000 << " millions" << std::endl;
+        long S{digitsum(n)};
+        long A{digitsum(n,true)};
 
-		vec ans{conc(primefac(S+A))};
-		for(num i{0} ; i < ans.size() ; i++)
-			if(ans.at(i) == n)
-				std::cout << n << std::endl;
-	}
+        vec ans{conc(primefac(S+A))};
+        for(num m : ans)
+            if(m == n)
+                std::cout << n << std::endl;
+    }
 
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
 
 //other functions
@@ -121,45 +121,45 @@ void Primefac::sieve()
 
 long digitsum(num n, bool alternate)
 {
-	vec S{};//every digit
-	long s{0};//the sum
-	num d{0};//the number of digits
+    vec S{};//every digit
+    long s{0};//the sum
+    num d{0};//the number of digits
 
-	//calculating highest digit position
-	if(n == 0) d = 0;
-	else d = 1+std::floor(std::log10(n));
+    //calculating highest digit position
+    if(n == 0) d = 0;
+    else d = 1+std::floor(std::log10(n));
 
-	while(d > 0)//isolating digits
-	{
-		d--;
-		S.push_back(std::floor(n/std::pow(10,d)));
-		n -= S.at(S.size()-1)*std::pow(10,d);
-	}
+    while(d > 0)//isolating digits
+    {
+        d--;
+        S.push_back(std::floor(n/std::pow(10,d)));
+        n -= S.back()*std::pow(10,d);
+    }
 
-	for(num i{0} ; i < S.size() ; i++)
-	{
-		if(alternate) s += std::pow(-1,i)*S.at(i);
-		else s += S.at(i);
-	}
-	return s;
+    for(num i{0} ; i < S.size() ; i++)
+    {
+        if(alternate) s += (1 - 2*(i&1))*S.at(i);
+        else s += S.at(i);
+    }
+    return s;
 }
 
 vec conc(vec lon)
 {
-	vec r{};
-	std::sort(lon.begin(),lon.end());
-	do{
-		r.push_back(0);
-		for(num i{0} ; i < lon.size() ; i++)
-		{
-			num d{0};
-			if(r.at(r.size()-1) == 0) d = 0;
-			else d = 1+std::floor(std::log10(r.at(r.size()-1)));
+    vec r{};
+    std::sort(lon.begin(),lon.end());
+    do{
+        r.push_back(0);
+        for(num n : lon)
+        {
+            num d{0};
+            if(r.back() == 0) d = 0;
+            else d = 1+std::floor(std::log10(r.back()));
 
-			r.at(r.size()-1) += std::pow(10,d)*lon.at(i);//we concatenate from right to left.
-		}
-	} while(std::next_permutation(lon.begin(),lon.end()));
+            r.back() += std::pow(10,d)*n;//we concatenate from right to left.
+        }
+    } while(std::next_permutation(lon.begin(),lon.end()));
 
-	return r;
+    return r;
 }
 
